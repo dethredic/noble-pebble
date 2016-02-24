@@ -1,3 +1,9 @@
+# noble - pebble
+
+I added the missing SMP code which allows me to pair my Linux computer to my Pebble.
+
+I also added an example which will pair with a Pebble
+
 # noble
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sandeepmistry/noble?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
