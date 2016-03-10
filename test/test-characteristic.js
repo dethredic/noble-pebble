@@ -1,7 +1,7 @@
 var should = require('should');
 var sinon = require('sinon');
 
-var Characteristic = require('../lib/characteristic');
+var Characteristic = require('../lib/characteristic_central');
 
 describe('Characteristic', function() {
   var mockNoble = null;
