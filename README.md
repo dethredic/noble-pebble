@@ -4,6 +4,10 @@ This repo combines the [noble](https://github.com/sandeepmistry/noble) and [blen
 
 I have added an example which will pair with a Pebble, and set up the ANCS service. Notification can be generated using a webview.
 
+## Usage
+
+Simply run ```sudo node pebble/main.js```, pair, then open the webview to send a notification
+
 
 ## Noble / Bleno License
 
