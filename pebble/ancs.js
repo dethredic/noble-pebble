@@ -1,55 +1,38 @@
 var noble = require('../index');
 
-var prompt = require('prompt');
+var ANCS = function() {
+  this._send_ns_notification = null;
+  this._send_ds_notification = null;
+  this._connected = false;
 
 
-var send_ns_notification = null;
-var send_ds_notification = null;
-
-var notificationSource = new noble.CharacteristicPeripheral({
+  this._notification_source = new noble.CharacteristicPeripheral({
     uuid: '9FBF120D630142D98C5825E699A21DBD',
     properties: ['notify'],
     onSubscribe: function(maxValueSize, updateValueCallback) {
-      console.log('Watch subscribed to the notification source: ' + maxValueSize);
-
-      send_ns_notification = updateValueCallback;
-
-
-      var data = new Buffer([
-        0x00, // EventID (Added)
-        0x00, // EventFlags
-        0x04, // CategoryID (Social)
-        0x00, // CategoryCount
-        0x00, 0x00, 0x00, 0x00, // NotificationUID
-      ]);
-
-      if (send_ns_notification) {
-        console.log('Sending NS notification');
-        send_ns_notification(data);
-      } else {
-        console.log('Can\'t send NS notification');
-      }
-
+      console.log('Watch subscribed to the notification source');
+      this._send_ns_notification = updateValueCallback;
     },
     onUnsubscribe: function() {
       console.log('Watch unsubscribed to the notificationSource');
+      this._send_ns_notification = null;
     },
-});
+  });
 
-var dataSource = new noble.CharacteristicPeripheral({
+  this._dataSource = new noble.CharacteristicPeripheral({
     uuid: '22EAC6E9-24D6-4BB5-BE44-B36ACE7C7BFB',
     properties: ['notify'],
     onSubscribe: function(maxValueSize, updateValueCallback) {
-      console.log('Watch subscribed to the data source: ' + maxValueSize);
-
-      send_ds_notification = updateValueCallback;
+      console.log('Watch subscribed to the data source');
+      this._send_ds_notification = updateValueCallback;
     },
     onUnsubscribe: function() {
       console.log('Watch unsubscribed to the data source');
+      this._send_ds_notification = null;
     },
-});
+  });
 
-var controlPoint = new noble.CharacteristicPeripheral({
+  this._controlPoint = new noble.CharacteristicPeripheral({
     uuid: '69D1D8F3-45E1-49A8-9821-9BBDFDAAD9D9',
     properties: ['write'],
     onWriteRequest: function(data, offset, withoutResponse, callback) {
@@ -78,88 +61,43 @@ var controlPoint = new noble.CharacteristicPeripheral({
         console.log('Unknown control point request: ' + data[0]);
       }
 
-      if (send_ds_notification) {
+      if (this._send_ds_notification) {
         console.log('Sending DS notification');
-        send_ds_notification(data);
+        this._send_ds_notification(data);
       } else {
         console.log('Can\'t send DS notification');
       }
     },
-});
+  });
 
-var ANCS = new noble.PrimaryService({
+  this._ancs_service = new noble.PrimaryService({
     uuid: '7905F431B5CE4E99A40F4B1E122D00D0',
     characteristics: [
-        notificationSource,
-        controlPoint,
-        dataSource,
+        this._notification_source,
+        this._controlPoint,
+        this._dataSource,
     ],
-});
+  });
+};
 
+ANCS.prototype.get_service = function() {
+  return this._ancs_service;
+};
 
-noble.on('stateChange', function(state) {
-  if (state === 'poweredOn') {
-    noble.setServices([ANCS]);
-    // noble.startAdvertising("Pebble ANCS", [ANCS.uuid], function(err) {
-    //   if (err) {
-    //     console.log(err);
-    //   }
-    // });
-
-    noble.startScanning();
+ANCS.prototype.send_notification = function(data) {
+  if (this.send_ns_notification && this.send_ds_notification) {
+    console.log('Sending notification');
+    var data = new Buffer([
+      0x00, // EventID (Added)
+      0x00, // EventFlags
+      0x04, // CategoryID (Social)
+      0x00, // CategoryCount
+      0x00, 0x00, 0x00, 0x00, // NotificationUID
+    ]);
+    this._send_ns_notification(data);
   } else {
-    noble.stopScanning();
+    console.log('Can\'t send notification');
   }
-});
+};
 
-noble.on('discover', function(peripheral) {
-  var advertisement = peripheral.advertisement;
-
-  var localName = advertisement.localName;
-  if (localName) {
-    console.log('Local Name: ' + localName);
-  }
-
-  if (localName == "Pebble Time LE 5BA8") {
-    noble.stopScanning();
-    peripheral.connect(function(error) {
-      var serviceUUIDs = ["fed9"];
-      var characteristicUUIDs = ["00000001328e0fbbc6421aa6699bdada", "00000002328e0fbbc6421aa6699bdada"];
-      peripheral.discoverSomeServicesAndCharacteristics(serviceUUIDs, characteristicUUIDs, function(error, services, characteristics) {
-        var connectivity_status = characteristics[0];
-        var trigger_pairing = characteristics[1];
-
-        // Write to CCCD so the watch treats us as a gateway
-        connectivity_status.discoverDescriptors(function(error, descriptors) {
-          var CCCD = descriptors[0];
-          descriptors[0].writeValue(new Buffer([0x01, 0x01]), function(error) {
-            console.log('Wrote to CCCD');
-          });
-        });
-
-        // Trigger pairing
-        console.log('Triggering Pairing');
-        trigger_pairing.read(function(error, data) {});
-      });
-    });
-    return;
-  }
-});
-
-
-// prompt.get(['username'], function (err, result) {
-//   var data = new Buffer([
-//     0x00, // EventID (Added)
-//     0x00, // EventFlags
-//     0x04, // CategoryID (Social)
-//     0x00, // CategoryCount
-//     0x00, 0x00, 0x00, 0x00, // NotificationUID
-//   ]);
-
-//   if (send_ns_notification) {
-//     console.log('Sending NS notification');
-//     send_ns_notification(data);
-//   } else {
-//     console.log('Can\'t send NS notification');
-//   }
-// });
+module.exports = ANCS;
