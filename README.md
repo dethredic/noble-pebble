@@ -8,6 +8,10 @@ I have added an example which will pair with a Pebble, and set up the ANCS servi
 
 Simply run ```sudo node pebble/main.js```, pair, then open the webview to send a notification
 
+## TODO
+
+* Get this working on OSX. I didn't touch the OSX bindings when ducttapings the repos togeather
+* Get App Attributes working. Currently I don't seem to get the app attributes request until after a timeout.
 
 ## Noble / Bleno License
 
