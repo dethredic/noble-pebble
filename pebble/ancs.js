@@ -3,22 +3,23 @@ var noble = require('../index');
 var ANCS = function() {
   this._send_ns_notification = null;
   this._send_ds_notification = null;
-  this._connected = false;
 
   this._cur_ns_notification = null;
   this._cur_notif_attributes = null;
   this._cur_appattributes = null;
+
+  ancs = this;
 
   this._notification_source = new noble.CharacteristicPeripheral({
     uuid: '9FBF120D630142D98C5825E699A21DBD',
     properties: ['notify'],
     onSubscribe: function(maxValueSize, updateValueCallback) {
       console.log('Watch subscribed to the notification source');
-      this._send_ns_notification = updateValueCallback;
+      ancs._send_ns_notification = updateValueCallback;
     },
     onUnsubscribe: function() {
       console.log('Watch unsubscribed to the notificationSource');
-      this._send_ns_notification = null;
+      ancs._send_ns_notification = null;
     },
   });
 
@@ -27,11 +28,11 @@ var ANCS = function() {
     properties: ['notify'],
     onSubscribe: function(maxValueSize, updateValueCallback) {
       console.log('Watch subscribed to the data source');
-      this._send_ds_notification = updateValueCallback;
+      ancs._send_ds_notification = updateValueCallback;
     },
     onUnsubscribe: function() {
       console.log('Watch unsubscribed to the data source');
-      this._send_ds_notification = null;
+      ancs._send_ds_notification = null;
     },
   });
 
@@ -45,17 +46,17 @@ var ANCS = function() {
       var data;
       if (data[0] == 0) {
         console.log('Get notif attributes');
-        data = this._cur_notif_attributes;
+        data = ancs._cur_notif_attributes;
       } else if (data[0] == 1) {
         console.log('Get app attributes');
-        data = this._cur_app_attributes;
+        data = ancs._cur_app_attributes;
       } else {
         console.log('Unknown control point request: ' + data[0]);
       }
 
-      if (this._send_ds_notification) {
+      if (ancs._send_ds_notification) {
         console.log('Sending DS notification');
-        this._send_ds_notification(data);
+        ancs._send_ds_notification(data);
       } else {
         console.log('Can\'t send DS notification');
       }
@@ -65,9 +66,9 @@ var ANCS = function() {
   this._ancs_service = new noble.PrimaryService({
     uuid: '7905F431B5CE4E99A40F4B1E122D00D0',
     characteristics: [
-        this._notification_source,
-        this._control_point,
-        this._data_source,
+        ancs._notification_source,
+        ancs._control_point,
+        ancs._data_source,
     ],
   });
 };
@@ -77,7 +78,6 @@ ANCS.prototype.get_service = function() {
 };
 
 ANCS.prototype.send_notification = function(ns_notification, notif_attributes, app_attributes) {
-  console.log(this._send_ns_notification);
   if (this._send_ns_notification) {
     console.log('Sending notification');
     this._cur_ns_notification = ns_notification;
