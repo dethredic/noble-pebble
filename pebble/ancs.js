@@ -54,11 +54,11 @@ var ANCS = function() {
         console.log('Unknown control point request: ' + data[0]);
       }
 
-      if (ancs._send_ds_notification) {
+      if (ancs._send_ds_notification && data) {
         console.log('Sending DS notification');
         ancs._send_ds_notification(data);
       } else {
-        console.log('Can\'t send DS notification');
+        console.log('Error sending DS notification');
       }
     },
   });
@@ -82,10 +82,10 @@ ANCS.prototype.send_notification = function(ns_notification, notif_attributes, a
     console.log('Sending notification');
     this._cur_ns_notification = ns_notification;
     this._cur_notif_attributes = notif_attributes;
-    this._cur_appattributes = app_attributes;
+    this._cur_app_attributes = app_attributes;
     this._send_ns_notification(ns_notification);
   } else {
-    console.log('Can\'t send notification');
+    console.log('Error sending notification');
   }
 };
 
