@@ -3,6 +3,8 @@ var noble = require('../index');
 var ANCS = require('./ancs');
 var PebblePair = require('./pair');
 
+var server = new (require('./server'))();
+
 var ancs = new ANCS();
 var pebble_pair = new PebblePair();
 
