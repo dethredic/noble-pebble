@@ -38,7 +38,7 @@ var server = function() {
         var title = new Buffer(payload['title']);
         var subtitle = new Buffer(payload['subtitle']);
         var message = new Buffer(payload['message']);
-        var date = new Buffer(payload['date'].replace(/-|:/g,'') + "00");
+        var date = new Buffer(payload['date'].replace(/-|:/g,''));
 
 
         var notificationAttributes = notif_builder.create_notif_attribtues(
