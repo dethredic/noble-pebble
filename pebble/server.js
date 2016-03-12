@@ -6,7 +6,7 @@ var notif_builder = new ANCSNotifBuilder();
 
 var lastUid = 0;
 
-var server =  function() {
+var server = function() {
   hapiServer.connection({
     host: 'localhost',
     port: '8080'
@@ -38,8 +38,7 @@ var server =  function() {
         var title = new Buffer(payload['title']);
         var subtitle = new Buffer(payload['subtitle']);
         var message = new Buffer(payload['message']);
-        // var date = new Buffer(new Date(payload['date']).toISOString());
-        var date = new Buffer("20160901T141523");
+        var date = new Buffer(payload['date'].replace(/-|:/g,'') + "00");
 
 
         var notificationAttributes = notif_builder.create_notif_attribtues(

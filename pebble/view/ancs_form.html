@@ -1,36 +1,36 @@
 <html>
-	<body>
-		<h3>ANCS Sender</h3>
-		<fieldset>
-			<form action="./ancs" method="post">
-				<p>
-					<label for="appIdentifier">App Identifier</label>
-					<input type="text" name="appIdentifier" />
-				</p>
-				<p>
-					<label for="appName">App Name</label>
-					<input type="text" name="appName" />
-				</p>
-				<p>
-					<label for="title">Title</label>
-					<input type="text" name="title" />
-				</p>
-				<p>
-					<label for="subtitle">Subtitle</label>
-					<input type="text" name="subtitle" />
-				</p>
-				<p>
-					<label for="message">Message</label>
-					<input type="text" name="message" />
-				</p>
-				<p>
-					<label for="date">Date/Time</label>
-					<input type="datetime-local" name="date" />
-				</p>
-				<p>
-				<input type="submit" value="Make it so" />
-				</p>
-			</form>
-		</fieldset>
-	</body>
+  <body>
+    <h3>ANCS Notification Sender</h3>
+    <fieldset>
+      <form action="./ancs" method="post">
+        <p>
+          <label for="appIdentifier">App Identifier</label>
+          <input type="text" name="appIdentifier" value="com.apple.MobileSMS"/>
+        </p>
+        <p>
+          <label for="appName">App Name</label>
+          <input type="text" name="appName" value="Messages" />
+        </p>
+        <p>
+          <label for="title">Title</label>
+          <input type="text" name="title" value="Phil G"/>
+        </p>
+        <p>
+          <label for="subtitle">Subtitle</label>
+          <input type="text" name="subtitle" value="finally"/>
+        </p>
+        <p>
+          <label for="message">Message</label>
+          <input type="text" name="message" value="has a better way to test / automate ANCS!"/>
+        </p>
+        <p>
+          <label for="date">Date/Time</label>
+          <input type="datetime-local" name="date" id="datePicker"/>
+        </p>
+        <p>
+        <input type="submit" value="Make it so" />
+        </p>
+      </form>
+    </fieldset>
+  </body>
 </html>

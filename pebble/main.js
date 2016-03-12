@@ -2,13 +2,10 @@ var noble = require('../index');
 
 var ANCS = require('./ancs');
 var PebblePair = require('./pair');
-var ANCSNotifBuilder = require('./ancs_notif_builder');
 
 var server = new (require('./server'))();
-
 var ancs = new ANCS();
 var pebble_pair = new PebblePair();
-var notif_builder = new ANCSNotifBuilder();
 
 noble.on('stateChange', function(state) {
   if (state === 'poweredOn') {
