@@ -12,7 +12,6 @@ Simply run ```sudo node pebble/main.js```, pair, then open the webview to send a
 
 * Pass in the Pebble's name instead of hard coding it.
 * Get this working on OSX. I didn't touch the OSX bindings when ducttapings the repos togeather
-* Get App Attributes working. Currently I don't seem to get the app attributes request until after a timeout.
 
 ## Noble / Bleno License
 

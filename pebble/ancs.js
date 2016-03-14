@@ -41,7 +41,6 @@ var ANCS = function() {
     properties: ['write'],
     onWriteRequest: function(data, offset, withoutResponse, callback) {
       // console.log('Got a control point write request');
-      // console.log(data.toString('hex'));
 
       var data;
       if (data[0] == 0) {
@@ -60,6 +59,8 @@ var ANCS = function() {
       } else {
         console.log('Error sending DS notification');
       }
+
+      callback(this.RESULT_SUCCESS);
     },
   });
 
